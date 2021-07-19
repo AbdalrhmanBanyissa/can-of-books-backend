@@ -17,7 +17,7 @@ app.listen(PORT, () => console.log(`listening on ${PORT}`));
 
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/Books', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`mongodb://abdalrhman:${process.env.PASSWORD}@cluster0-shard-00-00.oa7mn.mongodb.net:27017,cluster0-shard-00-01.oa7mn.mongodb.net:27017,cluster0-shard-00-02.oa7mn.mongodb.net:27017/Books?ssl=true&replicaSet=atlas-k6rpxo-shard-0&authSource=admin&retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const BookSchema = new mongoose.Schema({
   name: String,
@@ -67,6 +67,8 @@ const seedUserBooks = function () {
   })
   abdalrhman.save();
 }
+
+// seedUserBooks();
 
 app.get('/can-of-books',(req,res)=>{
   User.find({},(error,data)=>{
