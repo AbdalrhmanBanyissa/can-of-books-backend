@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
@@ -14,9 +15,10 @@ app.get('/', (request, response) => {
 })
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
-
+// `mongodb://abdalrhman:${process.env.PASSWORD}@cluster0-shard-00-00.oa7mn.mongodb.net:27017,cluster0-shard-00-01.oa7mn.mongodb.net:27017,cluster0-shard-00-02.oa7mn.mongodb.net:27017/Books?ssl=true&replicaSet=atlas-k6rpxo-shard-0&authSource=admin&retryWrites=true&w=majority`
+// 'mongodb://localhost:27017/Books'
 const mongoose = require('mongoose');
+const { json } = require('express');
 mongoose.connect(`mongodb://abdalrhman:${process.env.PASSWORD}@cluster0-shard-00-00.oa7mn.mongodb.net:27017,cluster0-shard-00-01.oa7mn.mongodb.net:27017,cluster0-shard-00-02.oa7mn.mongodb.net:27017/Books?ssl=true&replicaSet=atlas-k6rpxo-shard-0&authSource=admin&retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const BookSchema = new mongoose.Schema({
@@ -74,5 +76,21 @@ app.get('/can-of-books',(req,res)=>{
   User.find({},(error,data)=>{
     if(error) console.log(error);
     else res.send(data[0].books);
+  })
+})
+
+app.post('/can-of-books',(req,res)=>{
+  const { name,description,img,email } = req.body;
+  User.find({email},(error,data)=>{
+    if(error) console.log(error);
+    else {
+      data[0].books.push({
+        name,
+        description,
+        img
+      })
+      data[0].save();
+      res.send[data[0].books]
+    }
   })
 })
